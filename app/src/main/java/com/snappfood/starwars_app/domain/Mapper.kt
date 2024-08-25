@@ -12,5 +12,5 @@ fun Character.toUiModel(onClick: (character: Character) -> Unit): CharacterUiMod
         skin_color = this.skin_color,
         eye_color = this.eye_color,
         gender = this.gender,
-        onClick = onClick
+        onClick = { onClick(this) }
     )

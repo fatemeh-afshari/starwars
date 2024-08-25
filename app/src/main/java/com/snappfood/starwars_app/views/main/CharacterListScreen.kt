@@ -6,20 +6,25 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
+import com.snappfood.starwars_app.domain.CharacterUiModel
+import com.snappfood.starwars_app.domain.toUiModel
 import com.snappfood.starwars_app.model.Character
+import com.snappfood.starwars_app.model.ScreenDestinations
 
 @Composable
-fun CharacterListScreen(viewModel: CharacterViewModel, searchViewModel: SearchViewModel) {
+fun CharacterListScreen(viewModel: CharacterViewModel, searchViewModel: SearchViewModel , navController: NavController) {
     val characters = viewModel.charactersFlow.collectAsLazyPagingItems()
     val searchResult = searchViewModel.stateFlow.collectAsState()
     when (searchResult.value) {
@@ -27,20 +32,20 @@ fun CharacterListScreen(viewModel: CharacterViewModel, searchViewModel: SearchVi
             message = (searchResult.value as LoadableData.Failed).error,
             searchViewModel::search
         )
-        is LoadableData.Loaded -> SearchList(searchResult.value)
+        is LoadableData.Loaded -> SearchList(searchResult.value ,navController)
         LoadableData.Loading -> LoadingItem()
-        LoadableData.NotLoaded -> List(characters)
+        LoadableData.NotLoaded -> List(characters , navController)
     }
 
 
 }
 
 @Composable
-private fun SearchList(searchResult: LoadableData) {
+private fun SearchList(searchResult: LoadableData , navController: NavController) {
     if(searchResult is LoadableData.Loaded ) {
         LazyColumn {
-            items(searchResult.result.results) { character ->
-                CharacterItem(character)
+            items(searchResult.result) { character ->
+                CharacterItem(character ,navController)
 
             }
         }
@@ -48,11 +53,11 @@ private fun SearchList(searchResult: LoadableData) {
 }
 
 @Composable
-private fun List(characters: LazyPagingItems<Character>) {
+private fun List(characters: LazyPagingItems<CharacterUiModel>  ,navController: NavController) {
     LazyColumn {
         items(characters) { character ->
             character?.let {
-                CharacterItem(it)
+                CharacterItem(it , navController)
             }
         }
 
@@ -90,19 +95,23 @@ private fun List(characters: LazyPagingItems<Character>) {
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CharacterItem(character: Character) {
+fun CharacterItem(character: CharacterUiModel , navController: NavController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
-        elevation = 4.dp
+        elevation = 4.dp ,
+        onClick = {
+            character.onClick()
+           navController.navigate(ScreenDestinations.DetailScreen.route)
+        }
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(text = "Name: ${character.name}")
             Text(text = "Height: ${character.height}")
             Text(text = "Mass: ${character.mass}")
-            // Add more character details as needed
         }
     }
 }

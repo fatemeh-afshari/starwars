@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.snappfood.starwars_app.data.SearchRepository
 import com.snappfood.starwars_app.data.SelectedItemDetailRepository
+import com.snappfood.starwars_app.domain.CharacterUiModel
+import com.snappfood.starwars_app.domain.toUiModel
 import com.snappfood.starwars_app.model.CharacterResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -40,7 +42,7 @@ class SearchViewModel(
             }.onSuccess {
                 it.body()?.let {
 
-                    state.value = LoadableData.Loaded(it)
+                    state.value = LoadableData.Loaded(it.results.map { it.toUiModel { selectedItemDetailRepository.setValue(it) } })
                 } ?: kotlin.run {
                     state.value = LoadableData.Failed("Not found")
                 }
@@ -60,7 +62,7 @@ sealed class LoadableData {
     object NotLoaded : LoadableData()
     object Loading : LoadableData()
 
-    class Loaded(val result: CharacterResult) : LoadableData()
+    class Loaded(val result: List<CharacterUiModel>) : LoadableData()
 
     class Failed(val error: String) : LoadableData()
 

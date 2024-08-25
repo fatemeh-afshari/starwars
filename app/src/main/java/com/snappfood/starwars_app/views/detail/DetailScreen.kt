@@ -7,23 +7,16 @@ import com.snappfood.starwars_app.model.Character
 
 @Composable
 fun DetailScreen(
-    name: String?
+    character: Character?,
 ) {
-    val response = Character(
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        ""
-    )
 
-    Column() {
-        Text(text = response.name)
-        Text(text = response.height)
-        Text(text = response.mass)
-        Text(text = response.hair_color)
+    character?.let {
+        Column() {
+            Text(text = character.name)
+            Text(text = character.height)
+            Text(text = character.mass)
+            Text(text = character.hair_color)
+        }
     }
+
 }

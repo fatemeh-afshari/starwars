@@ -12,14 +12,23 @@ import com.snappfood.starwars_app.domain.CharacterUiModel
 import com.snappfood.starwars_app.domain.toUiModel
 import com.snappfood.starwars_app.model.Character
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.transformLatest
+import kotlinx.coroutines.launch
 
-class CharacterViewModel(
-    private val repository: CharacterRepository,
+class CharacterDetailViewModel(
     private val selectedItemDetailRepository: SelectedItemDetailRepository,
 ) : ViewModel() {
-
-    val charactersFlow: Flow<PagingData<CharacterUiModel>> =
-        repository.getCharactersPagingFlow().map { it.map { it.toUiModel { selectedItemDetailRepository.setValue(it) } } }.cachedIn(viewModelScope)
+    private val state: MutableStateFlow<Character?> = MutableStateFlow(null)
+    val stateFlow = state.asStateFlow()
+    init {
+        viewModelScope.launch {
+            selectedItemDetailRepository.getStateFlow().collectLatest {
+                state.value = it
+            }
+        }
+    }
 }

@@ -4,6 +4,7 @@ import com.snappfood.starwars_app.data.CharacterRepository
 import com.snappfood.starwars_app.data.SearchRepository
 import com.snappfood.starwars_app.data.SelectedItemDetailRepository
 import com.snappfood.starwars_app.network.ApiService
+import com.snappfood.starwars_app.views.main.CharacterDetailViewModel
 import com.snappfood.starwars_app.views.main.CharacterViewModel
 import com.snappfood.starwars_app.views.main.SearchViewModel
 import okhttp3.OkHttpClient
@@ -38,5 +39,6 @@ val appModule = module {
     single { SearchRepository(get()) }
     viewModel { CharacterViewModel(get() , get()) }
     viewModel { SearchViewModel(get() , get()) }
+    viewModel { CharacterDetailViewModel(get()) }
     single { SelectedItemDetailRepository() }
 }

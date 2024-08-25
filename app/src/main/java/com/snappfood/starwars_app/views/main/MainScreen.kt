@@ -15,6 +15,6 @@ fun MainScreen(
     Column {
         Header()
         Searchbar(searchValue.value , searchViewModel::onTextChanged, searchViewModel::finishSearch)
-        CharacterListScreen(viewModel = characterViewModel , searchViewModel = searchViewModel)
+        CharacterListScreen(viewModel = characterViewModel , searchViewModel = searchViewModel, navController)
     }
 }
