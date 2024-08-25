@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.phidev.starwars_app"
+    namespace = "com.snappfood.starwars_app"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.phidev.starwars_app"
+        applicationId = "com.snappfood.starwars_app"
         minSdk = 26
         targetSdk = 33
         versionCode = 1
