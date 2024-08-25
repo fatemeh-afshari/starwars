@@ -1,34 +1,46 @@
-package com.snappfood.starwars_app.views.main
+package com.snappfood.starwars_app.views.detail.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
-import androidx.paging.flatMap
-import androidx.paging.map
-import com.snappfood.starwars_app.data.CharacterRepository
+import com.snappfood.starwars_app.data.FilmRepository
 import com.snappfood.starwars_app.data.SelectedItemDetailRepository
-import com.snappfood.starwars_app.domain.CharacterUiModel
-import com.snappfood.starwars_app.domain.toUiModel
 import com.snappfood.starwars_app.model.Character
-import kotlinx.coroutines.flow.Flow
+import com.snappfood.starwars_app.model.Film
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.launch
 
 class CharacterDetailViewModel(
     private val selectedItemDetailRepository: SelectedItemDetailRepository,
+    private val filmRepository: FilmRepository,
 ) : ViewModel() {
     private val state: MutableStateFlow<Character?> = MutableStateFlow(null)
     val stateFlow = state.asStateFlow()
+
+    private val filmsState: MutableStateFlow<List<Film?>> = MutableStateFlow(emptyList())
+    val filmsStateFlow = filmsState.asStateFlow()
+
     init {
         viewModelScope.launch {
             selectedItemDetailRepository.getStateFlow().collectLatest {
                 state.value = it
+                state.value?.let {
+                    getFilmsDetail(it.films)
+                }
             }
         }
+    }
+
+
+    private fun getFilmsDetail(films: List<String>) {
+        viewModelScope.launch {
+            filmsState.value = films.map {
+                runCatching {
+                    filmRepository.getFilmDetail(it.filter { it.isDigit() }.toInt())
+                }.getOrNull()?.body()
+            }
+        }
+
     }
 }

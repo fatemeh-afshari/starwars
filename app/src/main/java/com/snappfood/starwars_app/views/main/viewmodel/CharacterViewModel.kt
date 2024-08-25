@@ -1,25 +1,29 @@
-package com.snappfood.starwars_app.views.main
+package com.snappfood.starwars_app.views.main.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import androidx.paging.flatMap
 import androidx.paging.map
 import com.snappfood.starwars_app.data.CharacterRepository
 import com.snappfood.starwars_app.data.SelectedItemDetailRepository
-import com.snappfood.starwars_app.domain.CharacterUiModel
-import com.snappfood.starwars_app.domain.toUiModel
-import com.snappfood.starwars_app.model.Character
+import com.snappfood.starwars_app.views.main.model.CharacterUiModel
+import com.snappfood.starwars_app.views.main.model.toUiModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.transformLatest
 
 class CharacterViewModel(
     private val repository: CharacterRepository,
     private val selectedItemDetailRepository: SelectedItemDetailRepository,
 ) : ViewModel() {
-
     val charactersFlow: Flow<PagingData<CharacterUiModel>> =
-        repository.getCharactersPagingFlow().map { it.map { it.toUiModel { selectedItemDetailRepository.setValue(it) } } }.cachedIn(viewModelScope)
+        repository.getCharactersPagingFlow()
+            .map {
+                it.map {
+                    it.toUiModel {
+                        selectedItemDetailRepository.setValue(it)
+                    }
+                }
+            }
+            .cachedIn(viewModelScope)
 }

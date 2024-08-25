@@ -2,17 +2,14 @@ package com.snappfood.starwars_app.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.snappfood.starwars_app.model.ScreenDestinations
 import com.snappfood.starwars_app.views.detail.DetailScreen
-import com.snappfood.starwars_app.views.main.CharacterDetailViewModel
-import com.snappfood.starwars_app.views.main.CharacterViewModel
+import com.snappfood.starwars_app.views.detail.viewmodel.CharacterDetailViewModel
+import com.snappfood.starwars_app.views.main.viewmodel.CharacterViewModel
 import com.snappfood.starwars_app.views.main.MainScreen
-import com.snappfood.starwars_app.views.main.SearchViewModel
+import com.snappfood.starwars_app.views.main.viewmodel.SearchViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -27,9 +24,10 @@ fun Navigation() {
         composable(
             ScreenDestinations.DetailScreen.route
         ) {
-            val searchViewModel: CharacterDetailViewModel = koinViewModel()
+            val detailViewModel: CharacterDetailViewModel = koinViewModel()
             DetailScreen(
-                character = searchViewModel.stateFlow.collectAsState().value
+                character = detailViewModel.stateFlow.collectAsState().value,
+                films = detailViewModel.filmsStateFlow.collectAsState().value
             )
         }
     }

@@ -1,4 +1,4 @@
-package com.snappfood.starwars_app.domain
+package com.snappfood.starwars_app.views.main.model
 
 import com.snappfood.starwars_app.model.Character
 

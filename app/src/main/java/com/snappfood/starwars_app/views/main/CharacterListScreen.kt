@@ -18,13 +18,14 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
-import com.snappfood.starwars_app.domain.CharacterUiModel
-import com.snappfood.starwars_app.domain.toUiModel
-import com.snappfood.starwars_app.model.Character
-import com.snappfood.starwars_app.model.ScreenDestinations
+import com.snappfood.starwars_app.views.main.model.CharacterUiModel
+import com.snappfood.starwars_app.navigation.ScreenDestinations
+import com.snappfood.starwars_app.views.main.viewmodel.CharacterViewModel
+import com.snappfood.starwars_app.views.main.viewmodel.LoadableData
+import com.snappfood.starwars_app.views.main.viewmodel.SearchViewModel
 
 @Composable
-fun CharacterListScreen(viewModel: CharacterViewModel, searchViewModel: SearchViewModel , navController: NavController) {
+fun CharacterListScreen(viewModel: CharacterViewModel, searchViewModel: SearchViewModel, navController: NavController) {
     val characters = viewModel.charactersFlow.collectAsLazyPagingItems()
     val searchResult = searchViewModel.stateFlow.collectAsState()
     when (searchResult.value) {
@@ -41,7 +42,7 @@ fun CharacterListScreen(viewModel: CharacterViewModel, searchViewModel: SearchVi
 }
 
 @Composable
-private fun SearchList(searchResult: LoadableData , navController: NavController) {
+private fun SearchList(searchResult: LoadableData, navController: NavController) {
     if(searchResult is LoadableData.Loaded ) {
         LazyColumn {
             items(searchResult.result) { character ->
@@ -53,7 +54,7 @@ private fun SearchList(searchResult: LoadableData , navController: NavController
 }
 
 @Composable
-private fun List(characters: LazyPagingItems<CharacterUiModel>  ,navController: NavController) {
+private fun List(characters: LazyPagingItems<CharacterUiModel>, navController: NavController) {
     LazyColumn {
         items(characters) { character ->
             character?.let {
@@ -97,7 +98,7 @@ private fun List(characters: LazyPagingItems<CharacterUiModel>  ,navController: 
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CharacterItem(character: CharacterUiModel , navController: NavController) {
+fun CharacterItem(character: CharacterUiModel, navController: NavController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()

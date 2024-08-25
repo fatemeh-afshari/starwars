@@ -1,12 +1,13 @@
 package com.snappfood.starwars_app.di
 
 import com.snappfood.starwars_app.data.CharacterRepository
+import com.snappfood.starwars_app.data.FilmRepository
 import com.snappfood.starwars_app.data.SearchRepository
 import com.snappfood.starwars_app.data.SelectedItemDetailRepository
 import com.snappfood.starwars_app.network.ApiService
-import com.snappfood.starwars_app.views.main.CharacterDetailViewModel
-import com.snappfood.starwars_app.views.main.CharacterViewModel
-import com.snappfood.starwars_app.views.main.SearchViewModel
+import com.snappfood.starwars_app.views.detail.viewmodel.CharacterDetailViewModel
+import com.snappfood.starwars_app.views.main.viewmodel.CharacterViewModel
+import com.snappfood.starwars_app.views.main.viewmodel.SearchViewModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -39,6 +40,7 @@ val appModule = module {
     single { SearchRepository(get()) }
     viewModel { CharacterViewModel(get() , get()) }
     viewModel { SearchViewModel(get() , get()) }
-    viewModel { CharacterDetailViewModel(get()) }
+    viewModel { CharacterDetailViewModel(get() , get()) }
     single { SelectedItemDetailRepository() }
+    single { FilmRepository(get()) }
 }
