@@ -15,10 +15,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,8 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.phidev.starwars_app.R
 
 @Composable
-fun Searchbar() {
-    var state by rememberSaveable { mutableStateOf("") }
+fun Searchbar(state: String, onTestChanged: (value: String) -> Unit, finishSearch: () -> Unit) {
     val currentFocus = LocalFocusManager.current
     val maxLength = 20
 
@@ -47,7 +42,7 @@ fun Searchbar() {
             value = state,
             onValueChange = {
                 if (it.length <= maxLength) {
-                    state = it
+                    onTestChanged(it)
                 }
             },
             shape = RoundedCornerShape(25.dp),
@@ -56,14 +51,14 @@ fun Searchbar() {
             keyboardActions = KeyboardActions(onDone = { currentFocus.clearFocus() }),
             leadingIcon = { Icon(Icons.Filled.Search, "Search Icon") },
             trailingIcon = {
-                if (state.isNotBlank()) {
-                    Icon(
-                        Icons.Filled.Clear,
-                        "Clear Icon",
-                        modifier = Modifier
-                            .clickable { state = "" }
-                    )
-                }
+                Icon(
+                    Icons.Filled.Clear,
+                    "Clear Icon",
+                    modifier = Modifier
+                        .clickable {
+                            finishSearch()
+                        }
+                )
             },
 
             label = {
